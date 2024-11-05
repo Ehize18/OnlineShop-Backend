@@ -27,11 +27,9 @@ namespace OnlineShop.DataBase.Redis
 			return Result.Success(verificationCode);
 		}
 
-		public async Task SaveVerificationCode(string email, int verificationCode)
+		public async Task SaveVerificationCode(string email, string verificationCode)
 		{
-			var verificationString = verificationCode.ToString();
-
-			await cache.SetStringAsync(email, verificationString, new DistributedCacheEntryOptions
+			await cache.SetStringAsync(email, verificationCode, new DistributedCacheEntryOptions
 			{
 				AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
 			});

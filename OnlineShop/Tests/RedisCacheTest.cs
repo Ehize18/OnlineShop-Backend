@@ -2,7 +2,6 @@
 using OnlineShop.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc.Testing;
 using NUnit.Framework.Legacy;
-using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 
 namespace OnlineShop.Tests;
@@ -20,9 +19,9 @@ public class RedisCacheTest
 	}
 
 	[Test]
-	public void SaveAndGetInt()
+	public async Task SaveAndGetInt()
 	{
-		_cache.SaveVerificationCode("test", 1234);
+		await _cache.SaveVerificationCode("test", "1234");
 		var answer = _cache.GetVerificationCode("test");
 		ClassicAssert.AreEqual(1234, answer.Result.Value);
 	}
@@ -30,7 +29,7 @@ public class RedisCacheTest
 	[Test]
 	public void SaveAndWaitFiveMinutes()
 	{
-		_cache.SaveVerificationCode("test", 1234);
+		_cache.SaveVerificationCode("test", "1234");
 		var t = Task.Run(async () =>
 		{
 			await Task.Delay(310000);
