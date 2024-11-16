@@ -1,13 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using OnlineShop.Core.Models;
+using OnlineShop.DataBase.PostgreSQL.Entities;
 
 
 namespace OnlineShop.DataBase.PostgreSQL.Configurations
 {
-	public class GoodCategoryConfiguration : IEntityTypeConfiguration<GoodCategory>
+	public class GoodCategoryConfiguration : IEntityTypeConfiguration<GoodCategoryEntity>
 	{
-		public void Configure(EntityTypeBuilder<GoodCategory> builder)
+		public void Configure(EntityTypeBuilder<GoodCategoryEntity> builder)
 		{
 			builder.HasKey(x => x.Id);
 			builder.Property(x => x.Id).ValueGeneratedOnAdd();

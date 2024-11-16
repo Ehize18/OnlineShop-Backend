@@ -47,5 +47,23 @@ namespace OnlineShop.DataBase.PostgreSQL.Repositories
 				return Result.Failure("Пользователь с такими данными уже существует");
 			}
 		}
+
+		public async Task<Result> UpdateRefreshToken(int id, string refreshToken)
+		{
+			
+			try
+			{
+				await _dbContext.Users
+				.AsNoTracking()
+				.Where(x => x.Id == id)
+				.ExecuteUpdateAsync(s => s
+				.SetProperty(x => x.RefreshToken, x => refreshToken));
+				return Result.Success();
+			}
+			catch (Exception ex)
+			{
+				return Result.Failure(ex.Message);
+			}
+		}
 	}
 }

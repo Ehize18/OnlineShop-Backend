@@ -32,5 +32,26 @@ namespace OnlineShop.Application.Services
 			var categoryResult = await _categoriesRepository.GetCategoriesByParrentId(id);
 			return categoryResult;
 		}
+
+		public async Task<Result<List<GoodCategory>>> GetAllCategories()
+		{
+			var categoriesResult = await _categoriesRepository.GetAllCategories();
+			return categoriesResult;
+		}
+
+		public async Task<Result> UpdateCategory(int id, GoodCategory category)
+		{
+			return await _categoriesRepository.Update(id, category);
+		}
+
+		public async Task<Result> DeleteCategoryCascade(int id)
+		{
+			return await _categoriesRepository.DeleteCascade(id);
+		}
+
+		public async Task<Result> DeleteCategoryWithSaveChilds(int id, int? parentId)
+		{
+			return await _categoriesRepository.DeleteWithNewParentId(id, parentId);
+		}
 	}
 }

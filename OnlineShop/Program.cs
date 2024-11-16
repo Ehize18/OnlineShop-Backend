@@ -14,6 +14,7 @@ using OnlineShop.DataBase.PostgreSQL.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using NUnit.Options;
+using OnlineShop.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -21,7 +22,9 @@ var configuration = builder.Configuration;
 configuration.AddJsonFile("appsettings.json");
 configuration.AddJsonFile("appsettings.Development.json");
 
-builder.Services.AddControllers();
+builder.Services.AddCors(o => o.AddPolicy("CorsPolicy", builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+
+builder.Services.AddControllers().AddNewtonsoftJson(o => o.SerializerSettings.ContractResolver = new PatchRequestContractResolver());
 
 builder.Services.AddStackExchangeRedisCache(options =>
 {
@@ -100,7 +103,8 @@ builder.Services.AddSwaggerGen(o =>
 				 {
 					 Type = ReferenceType.SecurityScheme,
 					 Id = "Bearer"
-				 }
+				 },
+				 Name = "Bearer"
 			},
 			new string[] {}
 		}
@@ -119,6 +123,21 @@ using (var scope = builder.Services.BuildServiceProvider().CreateScope())
 		{
 			DbContext.Database.Migrate();
 		}
+		var admins = configuration["Admins"];
+		var emails = admins.Split(",");
+		foreach (var email in emails)
+		{
+			var admin = new OnlineShop.Core.Models.User(email, "ADMIN", "1");
+			DbContext.Users.Add(admin);
+		}
+		try
+		{
+			DbContext.SaveChanges();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine(ex.ToString());
+		}
 	}
 }
 
@@ -134,6 +153,15 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseCors("CorsPolicy");
+
+app.UseCookiePolicy(new CookiePolicyOptions
+{
+	MinimumSameSitePolicy = SameSiteMode.Strict,
+	HttpOnly = Microsoft.AspNetCore.CookiePolicy.HttpOnlyPolicy.Always,
+	Secure = CookieSecurePolicy.Always
+});
 
 app.MapControllers();
 

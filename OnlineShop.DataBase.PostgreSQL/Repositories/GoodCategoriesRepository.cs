@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using OnlineShop.Core.Models;
 using OnlineShop.Core.Interfaces.Repositories;
+using OnlineShop.DataBase.PostgreSQL.Entities;
 
 namespace OnlineShop.DataBase.PostgreSQL.Repositories
 {
@@ -16,9 +17,10 @@ namespace OnlineShop.DataBase.PostgreSQL.Repositories
 
 		public async Task<Result> AddCategory(GoodCategory category)
 		{
+			var entity = MapToEntity(category);
 			try
 			{
-				await _dbContext.AddAsync(category);
+				await _dbContext.AddAsync(entity);
 				await _dbContext.SaveChangesAsync();
 				return Result.Success();
 			}
@@ -30,31 +32,39 @@ namespace OnlineShop.DataBase.PostgreSQL.Repositories
 
 		public async Task<Result<GoodCategory>> GetCategoryById(int id)
 		{
-			var category = await _dbContext.GoodCategories
+			var categoryEntity = await _dbContext.GoodCategories
 				.AsNoTracking()
 				.FirstOrDefaultAsync(c => c.Id == id);
-			if (category == null)
+			if (categoryEntity == null)
 				return Result.Failure<GoodCategory>("Category not found");
-			return Result.Success(category);
+			var result = MapEntity(categoryEntity);
+			return Result.Success(result);
 		}
 
 		public async Task<Result<List<GoodCategory>>> GetAllCategories()
 		{
-			var categories = await _dbContext.GoodCategories
+			var categoriesEntities = await _dbContext.GoodCategories
 				.AsNoTracking()
 				.OrderBy(x => x.Title)
 				.ToListAsync();
-			return Result.Success(categories);
+			var categories = new List<GoodCategory>();
+			foreach (var entity in categoriesEntities)
+			{
+				categories.Add(new GoodCategory(entity.Id, entity.Title, entity.Description, entity.ParentId, entity.CreatedAt, entity.UpdatedAt));
+			}
+			var result = CategoriesTreeBuilder.CreateAllTrees(categories);
+			return Result.Success(result);
 		}
 
 		public async Task<Result<List<GoodCategory>>> GetCategoriesByParrentId(int? id)
 		{
-			var canegories = await _dbContext.GoodCategories
+			var canegoriesEntities = await _dbContext.GoodCategories
 				.AsNoTracking()
 				.Where(x => x.ParentId == id)
 				.OrderBy(x => x.Title)
 				.ToListAsync();
-			return Result.Success(canegories);
+			var result = MapEntities(canegoriesEntities);
+			return Result.Success(result);
 		}
 
 		public async Task<Result> Update(int id, GoodCategory category)
@@ -76,7 +86,7 @@ namespace OnlineShop.DataBase.PostgreSQL.Repositories
 			}
 		}
 
-		public async Task<Result> Delete(int id)
+		public async Task<Result> DeleteCascade(int id)
 		{
 			try
 			{
@@ -84,12 +94,66 @@ namespace OnlineShop.DataBase.PostgreSQL.Repositories
 				.AsNoTracking()
 				.Where(x => x.Id == id)
 				.ExecuteDeleteAsync();
+				await _dbContext.GoodCategories
+					.AsNoTracking()
+					.Where(x => x.ParentId == id)
+					.ExecuteDeleteAsync();
 				return Result.Success();
 			}
 			catch (Exception ex)
 			{
 				return Result.Failure(ex.Message);
 			}
+		}
+
+		public async Task<Result> DeleteWithNewParentId(int id, int? newParentId)
+		{
+			try
+			{
+				await _dbContext.GoodCategories
+				.AsNoTracking()
+				.Where(x => x.Id == id)
+				.ExecuteDeleteAsync();
+				await _dbContext.GoodCategories
+					.AsNoTracking()
+					.Where(x => x.ParentId == id)
+					.ExecuteUpdateAsync(s => s
+					.SetProperty(x => x.ParentId, x => newParentId)
+					.SetProperty(x => x.UpdatedAt, x => DateTime.UtcNow));
+				return Result.Success();
+			}
+			catch (Exception ex)
+			{
+				return Result.Failure(ex.Message);
+			}
+		}
+
+		private GoodCategory MapEntity(GoodCategoryEntity entity)
+		{
+			return new GoodCategory(entity.Id, entity.Title, entity.Description, entity.ParentId, entity.CreatedAt, entity.UpdatedAt);
+		}
+
+		private List<GoodCategory> MapEntities(List<GoodCategoryEntity> entities)
+		{
+			var categories = new List<GoodCategory>();
+			foreach (var entity in entities)
+			{
+				categories.Add(new GoodCategory(entity.Id, entity.Title, entity.Description, entity.ParentId, entity.CreatedAt, entity.UpdatedAt));
+			}
+			return categories;
+		}
+
+		private GoodCategoryEntity MapToEntity(GoodCategory category)
+		{
+			return new GoodCategoryEntity()
+			{
+				Id = category.Id,
+				Title = category.Title,
+				Description = category.Description,
+				ParentId = category.ParentId,
+				CreatedAt = category.CreatedAt,
+				UpdatedAt = category.UpdatedAt
+			};
 		}
 	}
 }

@@ -8,5 +8,6 @@ namespace OnlineShop.Core.Interfaces.Repositories
 		Task<Result> AddUser(User user);
 		Task<Result<User>> GetUserByEmail(string email);
 		Task<Result<User>> GetUserByRefreshToken(string token);
+		Task<Result> UpdateRefreshToken(int id, string refreshToken);
 	}
 }

@@ -56,6 +56,11 @@ namespace OnlineShop.Application.Services
 			else
 			{
 				refreshToken = userResult.Value.RefreshToken;
+				if (refreshToken == "1")
+				{
+					refreshToken = _jwtProvider.GenerateRefreshToken();
+					_usersRepository.UpdateRefreshToken((int)userResult.Value.Id, refreshToken);
+				}
 				role = userResult.Value.Role;
 			}
 			var token = _jwtProvider.GenerateToken(email, role);
