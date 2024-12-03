@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using OnlineShop.DataBase.PostgreSQL;
@@ -11,9 +12,11 @@ using OnlineShop.DataBase.PostgreSQL;
 namespace OnlineShop.DataBase.PostgreSQL.Migrations
 {
     [DbContext(typeof(OnlineStoreDbContext))]
-    partial class OnlineStoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241126053205_Goods")]
+    partial class Goods
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -127,41 +130,6 @@ namespace OnlineShop.DataBase.PostgreSQL.Migrations
                     b.ToTable("GoodEntity");
                 });
 
-            modelBuilder.Entity("OnlineShop.DataBase.PostgreSQL.Entities.ImageEntity", b =>
-                {
-                    b.Property<int?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamptz");
-
-                    b.Property<int>("GoodId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Path")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamptz");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GoodId");
-
-                    b.HasIndex("Path")
-                        .IsUnique();
-
-                    b.ToTable("Images");
-                });
-
             modelBuilder.Entity("OnlineShop.DataBase.PostgreSQL.Entities.GoodEntity", b =>
                 {
                     b.HasOne("OnlineShop.DataBase.PostgreSQL.Entities.GoodCategoryEntity", "Category")
@@ -173,25 +141,9 @@ namespace OnlineShop.DataBase.PostgreSQL.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("OnlineShop.DataBase.PostgreSQL.Entities.ImageEntity", b =>
-                {
-                    b.HasOne("OnlineShop.DataBase.PostgreSQL.Entities.GoodEntity", "Good")
-                        .WithMany("Images")
-                        .HasForeignKey("GoodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Good");
-                });
-
             modelBuilder.Entity("OnlineShop.DataBase.PostgreSQL.Entities.GoodCategoryEntity", b =>
                 {
                     b.Navigation("Goods");
-                });
-
-            modelBuilder.Entity("OnlineShop.DataBase.PostgreSQL.Entities.GoodEntity", b =>
-                {
-                    b.Navigation("Images");
                 });
 #pragma warning restore 612, 618
         }

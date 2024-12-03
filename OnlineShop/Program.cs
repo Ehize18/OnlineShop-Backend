@@ -83,6 +83,12 @@ builder.Services.AddScoped<IGoodCategoriesService, GoodCategoriesService>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IGoodCategoriesRepository, GoodCategoriesRepository>();
 
+builder.Services.AddScoped<IGoodsRepository, GoodsRepository>();
+builder.Services.AddScoped<IGoodsService, GoodsService>();
+
+builder.Services.AddScoped<IImageRepository, ImageRepository>();
+builder.Services.AddScoped<IImagesService, ImagesService>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(o =>
 {
@@ -121,7 +127,7 @@ using (var scope = builder.Services.BuildServiceProvider().CreateScope())
 	{
 		if (DbContext.Database.GetPendingMigrations().Any())
 		{
-			DbContext.Database.Migrate();
+			//DbContext.Database.Migrate();
 		}
 		var admins = configuration["Admins"];
 		var emails = admins.Split(",");

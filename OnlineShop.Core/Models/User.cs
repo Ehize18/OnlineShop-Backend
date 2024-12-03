@@ -10,6 +10,7 @@ namespace OnlineShop.Core.Models
 		public string RefreshToken { get; } = string.Empty;
 		public DateTime CreatedAt { get; }
 		public DateTime UpdatedAt { get; }
+		public List<Basket> Baskets { get; }
 
 		public User() { }
 

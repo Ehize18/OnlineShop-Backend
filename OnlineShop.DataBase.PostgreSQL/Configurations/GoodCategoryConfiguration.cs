@@ -19,6 +19,10 @@ namespace OnlineShop.DataBase.PostgreSQL.Configurations
 
 			builder.Property(x => x.CreatedAt).HasColumnType("timestamptz");
 			builder.Property(x => x.UpdatedAt).HasColumnType("timestamptz");
+
+			builder.HasMany(x => x.Goods)
+				.WithOne(x => x.Category)
+				.HasForeignKey(x => x.CategoryId);
 		}
 	}
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Contracts.GoodCategories;
+using OnlineShop.Contracts.Goods;
 using OnlineShop.Core.Interfaces;
 using OnlineShop.Core.Models;
 
@@ -12,10 +13,12 @@ namespace OnlineShop.Controllers
 	public class GoodCategoriesController : ControllerBase
 	{
 		private readonly IGoodCategoriesService _categoriesService;
+		private readonly IGoodsService _goodsService;
 
-		public GoodCategoriesController(IGoodCategoriesService categoriesService)
+		public GoodCategoriesController(IGoodCategoriesService categoriesService, IGoodsService goodsService)
 		{
 			_categoriesService = categoriesService;
+			_goodsService = goodsService;
 		}
 
 		[HttpGet("{id:int}")]
@@ -54,15 +57,27 @@ namespace OnlineShop.Controllers
 			return Ok(response);
 		}
 
-		private int GetTreeCount(List<GoodCategory> goodCategories)
+		[HttpGet("{id:int}/goods")]
+		public async Task<ActionResult<GoodCategoryGoodsResponse>> GetGoodsWithPagination(int id, [FromQuery]GoodCategoryGoodsRequest request)
 		{
-			int count = goodCategories.Count;
-			foreach (var goodCategory in goodCategories)
-			{
-				if (goodCategory.Childs.Count > 0)
-					count += GetTreeCount(goodCategory.Childs);
-			}
-			return count;
+			var goodsResult = await _goodsService.GetGoodsByGategoryId(id, request.page, request.pageSize);
+			if (goodsResult.IsFailure)
+				return BadRequest(goodsResult.Error);
+			var goods = goodsResult.Value;
+			var goodsResponse = new List<GoodResponse>();
+			foreach (var good in goods)
+				goodsResponse.Add(
+					new GoodResponse(
+						(int)good.Id,
+						good.Name,
+						good.Description,
+						good.Price,
+						good.CategoryId,
+						good.Images.Select(x => x.Id).ToList(),
+						good.CreatedAt,
+						good.UpdatedAt
+				));
+			return Ok(new GoodCategoryGoodsResponse(goodsResponse.Count, goodsResponse));
 		}
 
 		[HttpPost]
@@ -109,6 +124,16 @@ namespace OnlineShop.Controllers
 			if (deleteResult.IsFailure)
 				return BadRequest(deleteResult.Error);
 			return Ok();
+		}
+		private int GetTreeCount(List<GoodCategory> goodCategories)
+		{
+			int count = goodCategories.Count;
+			foreach (var goodCategory in goodCategories)
+			{
+				if (goodCategory.Childs.Count > 0)
+					count += GetTreeCount(goodCategory.Childs);
+			}
+			return count;
 		}
 	}
 }

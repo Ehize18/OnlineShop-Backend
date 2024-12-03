@@ -9,6 +9,7 @@
 		public List<GoodCategory> Childs { get; } = new();
 		public DateTime CreatedAt { get; }
 		public DateTime UpdatedAt { get; }
+		public List<Good> Goods { get; } = new();
 
 		public GoodCategory() { }
 
