@@ -9,6 +9,8 @@
 		public Good Good { get; }
 		public int Count { get; private set; }
 
+		public BasketItem() { }
+
 		public BasketItem(int basketId, int goodId)
 		{
 			BasketId = basketId;

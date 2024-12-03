@@ -17,6 +17,10 @@ namespace OnlineShop.DataBase.PostgreSQL.Configurations
 			builder.Property(x => x.RefreshToken).HasColumnType("text");
 			builder.Property(x => x.CreatedAt).HasColumnType("timestamptz");
 			builder.Property(x => x.UpdatedAt).HasColumnType("timestamptz");
+
+			builder.HasMany(x => x.Baskets)
+				.WithOne(x => x.User)
+				.HasForeignKey(x => x.UsertId);
 		}
 	}
 }

@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using OnlineShop.Core.Models;
 using OnlineShop.Core.Interfaces.Repositories;
-using OnlineShop.DataBase.PostgreSQL.Entities;
 
 namespace OnlineShop.DataBase.PostgreSQL.Repositories
 {
@@ -17,10 +16,9 @@ namespace OnlineShop.DataBase.PostgreSQL.Repositories
 
 		public async Task<Result> AddCategory(GoodCategory category)
 		{
-			var entity = MapToEntity(category);
 			try
 			{
-				await _dbContext.AddAsync(entity);
+				await _dbContext.AddAsync(category);
 				await _dbContext.SaveChangesAsync();
 				return Result.Success();
 			}
@@ -32,39 +30,32 @@ namespace OnlineShop.DataBase.PostgreSQL.Repositories
 
 		public async Task<Result<GoodCategory>> GetCategoryById(int id)
 		{
-			var categoryEntity = await _dbContext.GoodCategories
+			var category = await _dbContext.GoodCategories
 				.AsNoTracking()
 				.FirstOrDefaultAsync(c => c.Id == id);
-			if (categoryEntity == null)
+			if (category == null)
 				return Result.Failure<GoodCategory>("Category not found");
-			var result = MapEntity(categoryEntity);
-			return Result.Success(result);
+			return Result.Success(category);
 		}
 
 		public async Task<Result<List<GoodCategory>>> GetAllCategories()
 		{
-			var categoriesEntities = await _dbContext.GoodCategories
+			var categories = await _dbContext.GoodCategories
 				.AsNoTracking()
 				.OrderBy(x => x.Title)
 				.ToListAsync();
-			var categories = new List<GoodCategory>();
-			foreach (var entity in categoriesEntities)
-			{
-				categories.Add(new GoodCategory(entity.Id, entity.Title, entity.Description, entity.ParentId, entity.CreatedAt, entity.UpdatedAt));
-			}
 			var result = CategoriesTreeBuilder.CreateAllTrees(categories);
 			return Result.Success(result);
 		}
 
 		public async Task<Result<List<GoodCategory>>> GetCategoriesByParrentId(int? id)
 		{
-			var canegoriesEntities = await _dbContext.GoodCategories
+			var categories = await _dbContext.GoodCategories
 				.AsNoTracking()
 				.Where(x => x.ParentId == id)
 				.OrderBy(x => x.Title)
 				.ToListAsync();
-			var result = MapEntities(canegoriesEntities);
-			return Result.Success(result);
+			return Result.Success(categories);
 		}
 
 		public async Task<Result> Update(int id, GoodCategory category)
@@ -126,34 +117,6 @@ namespace OnlineShop.DataBase.PostgreSQL.Repositories
 			{
 				return Result.Failure(ex.Message);
 			}
-		}
-
-		private GoodCategory MapEntity(GoodCategoryEntity entity)
-		{
-			return new GoodCategory(entity.Id, entity.Title, entity.Description, entity.ParentId, entity.CreatedAt, entity.UpdatedAt);
-		}
-
-		private List<GoodCategory> MapEntities(List<GoodCategoryEntity> entities)
-		{
-			var categories = new List<GoodCategory>();
-			foreach (var entity in entities)
-			{
-				categories.Add(new GoodCategory(entity.Id, entity.Title, entity.Description, entity.ParentId, entity.CreatedAt, entity.UpdatedAt));
-			}
-			return categories;
-		}
-
-		private GoodCategoryEntity MapToEntity(GoodCategory category)
-		{
-			return new GoodCategoryEntity()
-			{
-				Id = category.Id,
-				Title = category.Title,
-				Description = category.Description,
-				ParentId = category.ParentId,
-				CreatedAt = category.CreatedAt,
-				UpdatedAt = category.UpdatedAt
-			};
 		}
 	}
 }

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace OnlineShop.DataBase.PostgreSQL.Configurations
 {
+
 	public class BasketConfiguration : IEntityTypeConfiguration<Basket>
 	{
 		public void Configure(EntityTypeBuilder<Basket> builder)

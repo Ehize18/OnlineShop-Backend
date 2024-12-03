@@ -1,13 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using OnlineShop.Core.Models;
-using OnlineShop.DataBase.PostgreSQL.Entities;
 
 namespace OnlineShop.DataBase.PostgreSQL.Configurations
 {
-	public class GoodEntityConfiguration : IEntityTypeConfiguration<GoodEntity>
+	public class GoodEntityConfiguration : IEntityTypeConfiguration<Good>
 	{
-		public void Configure(EntityTypeBuilder<GoodEntity> builder)
+		public void Configure(EntityTypeBuilder<Good> builder)
 		{
 			builder.HasKey(x => x.Id);
 			builder.Property(x => x.Id).ValueGeneratedOnAdd();
@@ -17,6 +16,9 @@ namespace OnlineShop.DataBase.PostgreSQL.Configurations
 
 			builder.Property(x => x.Description).HasColumnType("text");
 			builder.Property(x => x.Price).HasColumnType("integer");
+
+			builder.Property(x => x.CreatedAt).HasColumnType("timestamptz");
+			builder.Property(x => x.UpdatedAt).HasColumnType("timestamptz");
 
 			builder.HasOne(x => x.Category)
 				.WithMany(x => x.Goods)

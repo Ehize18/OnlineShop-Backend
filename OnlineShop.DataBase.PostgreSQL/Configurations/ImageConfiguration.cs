@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using OnlineShop.DataBase.PostgreSQL.Entities;
+using OnlineShop.Core.Models;
 
 namespace OnlineShop.DataBase.PostgreSQL.Configurations
 {
-	public class ImageConfiguration : IEntityTypeConfiguration<ImageEntity>
+	public class ImageConfiguration : IEntityTypeConfiguration<Image>
 	{
-		public void Configure(EntityTypeBuilder<ImageEntity> builder)
+		public void Configure(EntityTypeBuilder<Image> builder)
 		{
 			builder.HasKey(x => x.Id);
 			builder.Property(x => x.Id).ValueGeneratedOnAdd();
