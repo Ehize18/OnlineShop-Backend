@@ -16,12 +16,12 @@ namespace OnlineShop.Application.Services
 			_goodCategoriesRepository = goodCategoriesRepository;
 		}
 
-		public async Task<Result<int>> AddGood(string name, string description, int price, int categoryId)
+		public async Task<Result<int>> AddGood(string name, string description, int price, int categoryId, int count)
 		{
 			var categoryResult = await _goodCategoriesRepository.GetCategoryById(categoryId);
 			if (categoryResult.IsFailure)
 				return Result.Failure<int>(categoryResult.Error);
-			var good = new Good(null, name, description, price, categoryResult.Value);
+			var good = new Good(null, name, description, price, categoryResult.Value, count);
 			var result = await _goodsRepository.Add(good);
 			return result;
 		}

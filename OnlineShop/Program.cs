@@ -89,6 +89,16 @@ builder.Services.AddScoped<IGoodsService, GoodsService>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<IImagesService, ImagesService>();
 
+builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+builder.Services.AddScoped<IBasketItemRepository, BasketItemRepository>();
+builder.Services.AddScoped<IBasketsService, BasketsService>();
+
+builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
+builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
+
+builder.Services.AddScoped<IDeliveryMethodRepository, DeliveryMethodRepository>();
+builder.Services.AddScoped<IDeliveryMethodService, DeliveryMethodService>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(o =>
 {

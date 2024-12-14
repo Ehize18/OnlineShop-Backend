@@ -18,7 +18,7 @@ namespace OnlineShop.DataBase.PostgreSQL.Repositories
 		{
 			try
 			{
-				var e = await _dbContext.AddAsync(good);
+				var e = await _dbContext.GoodEntity.AddAsync(good);
 				await _dbContext.SaveChangesAsync();
 				return Result.Success((int)e.Entity.Id);
 			}
@@ -73,6 +73,7 @@ namespace OnlineShop.DataBase.PostgreSQL.Repositories
 					.SetProperty(x => x.Description, x => newGood.Description)
 					.SetProperty(x => x.Price, x => newGood.Price)
 					.SetProperty(x => x.CategoryId, x => newGood.CategoryId)
+					.SetProperty(x => x.Count, x => newGood.Count)
 					.SetProperty(x => x.UpdatedAt, x => DateTime.UtcNow));
 				return Result.Success();
 			}

@@ -24,7 +24,7 @@ namespace OnlineShop.Controllers
 		[Authorize(Roles = "ADMIN")]
 		public async Task<ActionResult> Add(GoodRequest request)
 		{
-			var result = await _goodsService.AddGood(request.name, request.description, request.price, request.categoryId);
+			var result = await _goodsService.AddGood(request.name, request.description, request.price, request.categoryId, request.count);
 			if (result.IsFailure)
 				return BadRequest(result.Error);
 			return Ok(result.Value);
@@ -62,6 +62,7 @@ namespace OnlineShop.Controllers
 				patch.IsFieldPresent(nameof(good.Description)) ? patch.Description : good.Description,
 				patch.IsFieldPresent(nameof(good.Price)) ? (int)patch.Price : good.Price,
 				patch.IsFieldPresent(nameof(good.CategoryId)) ? (int)patch.CategoryId : good.CategoryId,
+				patch.IsFieldPresent(nameof(good.Price)) ? (int)patch.Count : good.Count,
 				good.CreatedAt, good.UpdatedAt
 				);
 			var pathResult = await _goodsService.UpdateGood(id, newGood);
@@ -96,7 +97,7 @@ namespace OnlineShop.Controllers
 		}
 
 		[HttpGet("{id:int}")]
-		public async Task<ActionResult> GetBuId(int id)
+		public async Task<ActionResult> GetById(int id)
 		{
 			var goodResult = await _goodsService.GetGoodById(id);
 			if (goodResult.IsFailure)
@@ -108,6 +109,7 @@ namespace OnlineShop.Controllers
 				goodResult.Value.Price,
 				goodResult.Value.CategoryId,
 				goodResult.Value.Images.Select(x => x.Id).ToList(),
+				goodResult.Value.Count,
 				goodResult.Value.CreatedAt,
 				goodResult.Value.UpdatedAt
 				);

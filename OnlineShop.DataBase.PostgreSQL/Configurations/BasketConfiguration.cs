@@ -17,6 +17,11 @@ namespace OnlineShop.DataBase.PostgreSQL.Configurations
 			builder.HasKey(x => x.Id);
 			builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
+			builder.Property(x => x.isCompleted).HasColumnType("boolean");
+
+			builder.Property(x => x.CreatedAt).HasColumnType("timestamptz");
+			builder.Property(x => x.UpdatedAt).HasColumnType("timestamptz");
+
 			builder.HasOne(x => x.User)
 				.WithMany(x => x.Baskets)
 				.HasForeignKey(x => x.UsertId);

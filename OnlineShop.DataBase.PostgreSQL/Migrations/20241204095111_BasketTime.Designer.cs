@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using OnlineShop.DataBase.PostgreSQL;
@@ -11,9 +12,11 @@ using OnlineShop.DataBase.PostgreSQL;
 namespace OnlineShop.DataBase.PostgreSQL.Migrations
 {
     [DbContext(typeof(OnlineStoreDbContext))]
-    partial class OnlineStoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241204095111_BasketTime")]
+    partial class BasketTime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,36 +82,6 @@ namespace OnlineShop.DataBase.PostgreSQL.Migrations
                     b.HasIndex("GoodId");
 
                     b.ToTable("BasketItems");
-                });
-
-            modelBuilder.Entity("OnlineShop.Core.Models.DeliveryMethod", b =>
-                {
-                    b.Property<int?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamptz");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamptz");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Title")
-                        .IsUnique();
-
-                    b.ToTable("DeliveryMethods");
                 });
 
             modelBuilder.Entity("OnlineShop.Core.Models.Good", b =>
@@ -222,36 +195,6 @@ namespace OnlineShop.DataBase.PostgreSQL.Migrations
                     b.ToTable("Images");
                 });
 
-            modelBuilder.Entity("OnlineShop.Core.Models.PaymentMethod", b =>
-                {
-                    b.Property<int?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamptz");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamptz");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Title")
-                        .IsUnique();
-
-                    b.ToTable("PaymentMethods");
-                });
-
             modelBuilder.Entity("OnlineShop.Core.Models.User", b =>
                 {
                     b.Property<int?>("Id")
@@ -305,15 +248,13 @@ namespace OnlineShop.DataBase.PostgreSQL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OnlineShop.Core.Models.Good", "Good")
+                    b.HasOne("OnlineShop.Core.Models.Good", null)
                         .WithMany()
                         .HasForeignKey("GoodId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Basket");
-
-                    b.Navigation("Good");
                 });
 
             modelBuilder.Entity("OnlineShop.Core.Models.Good", b =>

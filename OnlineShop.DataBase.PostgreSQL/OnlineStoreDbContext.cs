@@ -13,6 +13,8 @@ namespace OnlineShop.DataBase.PostgreSQL
 		public DbSet<Image> Images { get; set; }
 		public DbSet<BasketItem> BasketItems { get; set; }
 		public DbSet<Basket> Baskets { get; set; }
+		public DbSet<PaymentMethod> PaymentMethods { get; set; }
+		public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -22,6 +24,8 @@ namespace OnlineShop.DataBase.PostgreSQL
 			modelBuilder.ApplyConfiguration(new ImageConfiguration());
 			modelBuilder.ApplyConfiguration(new BasketConfiguration());
 			modelBuilder.ApplyConfiguration(new BasketItemConfiguration());
+			modelBuilder.ApplyConfiguration(new PaymentMethodConfiguration());
+			modelBuilder.ApplyConfiguration(new DeliveryMethodConfiguration());
 			base.OnModelCreating(modelBuilder);
 		}
 	}

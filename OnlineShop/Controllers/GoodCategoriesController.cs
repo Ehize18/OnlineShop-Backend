@@ -74,6 +74,7 @@ namespace OnlineShop.Controllers
 						good.Price,
 						good.CategoryId,
 						good.Images.Select(x => x.Id).ToList(),
+						good.Count,
 						good.CreatedAt,
 						good.UpdatedAt
 				));

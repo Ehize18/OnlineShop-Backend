@@ -17,6 +17,8 @@ namespace OnlineShop.DataBase.PostgreSQL.Configurations
 			builder.Property(x => x.Description).HasColumnType("text");
 			builder.Property(x => x.Price).HasColumnType("integer");
 
+			builder.Property(x => x.Count).HasDefaultValue(0);
+
 			builder.Property(x => x.CreatedAt).HasColumnType("timestamptz");
 			builder.Property(x => x.UpdatedAt).HasColumnType("timestamptz");
 
@@ -25,6 +27,9 @@ namespace OnlineShop.DataBase.PostgreSQL.Configurations
 				.HasForeignKey(x => x.CategoryId);
 
 			builder.HasMany(x => x.Images)
+				.WithOne(x => x.Good)
+				.HasForeignKey(x => x.GoodId);
+			builder.HasMany<BasketItem>()
 				.WithOne(x => x.Good)
 				.HasForeignKey(x => x.GoodId);
 		}

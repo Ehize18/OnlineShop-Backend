@@ -8,6 +8,8 @@
 		public int GoodId { get; }
 		public Good Good { get; }
 		public int Count { get; private set; }
+		public DateTime CreatedAt { get; }
+		public DateTime UpdatedAt { get; }
 
 		public BasketItem() { }
 
@@ -16,6 +18,8 @@
 			BasketId = basketId;
 			GoodId = goodId;
 			Count = 1;
+			CreatedAt = DateTime.UtcNow;
+			UpdatedAt = CreatedAt;
 		}
 
 		public void IncreaseCount()

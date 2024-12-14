@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using OnlineShop.DataBase.PostgreSQL;
@@ -11,9 +12,11 @@ using OnlineShop.DataBase.PostgreSQL;
 namespace OnlineShop.DataBase.PostgreSQL.Migrations
 {
     [DbContext(typeof(OnlineStoreDbContext))]
-    partial class OnlineStoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241214064253_PaymentAndDeliveryMethods")]
+    partial class PaymentAndDeliveryMethods
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -104,9 +107,6 @@ namespace OnlineShop.DataBase.PostgreSQL.Migrations
                         .HasColumnType("timestamptz");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Title")
-                        .IsUnique();
 
                     b.ToTable("DeliveryMethods");
                 });
@@ -245,9 +245,6 @@ namespace OnlineShop.DataBase.PostgreSQL.Migrations
                         .HasColumnType("timestamptz");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Title")
-                        .IsUnique();
 
                     b.ToTable("PaymentMethods");
                 });

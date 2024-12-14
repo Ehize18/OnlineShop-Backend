@@ -11,6 +11,7 @@ namespace OnlineShop.Core.Models
 		public int CategoryId { get; }
 		public GoodCategory Category { get; }
 		public List<Image> Images { get; }
+		public int Count { get; }
 		public DateTime CreatedAt { get; }
 		public DateTime UpdatedAt { get; }
 
@@ -28,14 +29,15 @@ namespace OnlineShop.Core.Models
 			UpdatedAt = CreatedAt;
 		}
 
-		public Good(int? id, string name, string description, int price, GoodCategory category)
+		public Good(int? id, string name, string description, int price, GoodCategory category, int count)
 		{
 			Id = id;
 			Name = name;
 			Description = description;
 			Price = price;
 			CategoryId = (int)category.Id;
-			Category = category;
+			//Category = category;
+			Count = count;
 			CreatedAt = DateTime.UtcNow;
 			UpdatedAt = CreatedAt;
 		}
@@ -53,7 +55,7 @@ namespace OnlineShop.Core.Models
 			UpdatedAt = updatedAt;
 		}
 
-		public Good(int? id, string name, string description, int price, int categoryId,
+		public Good(int? id, string name, string description, int price, int categoryId, int count,
 			DateTime createdAt, DateTime updatedAt)
 		{
 			Id = id;
@@ -61,6 +63,7 @@ namespace OnlineShop.Core.Models
 			Description = description;
 			Price = price;
 			CategoryId = categoryId;
+			Count = count;
 			CreatedAt = createdAt;
 			UpdatedAt = updatedAt;
 		}
